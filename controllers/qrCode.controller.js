@@ -1,6 +1,6 @@
 const QRCode = require("../models/qrCode.model");
 const { successResponse, errorResponse } = require("../utils/responseHelpers");
-const crypto = require("crypto");
+// const crypto = require("crypto");
 
 // Get all QR codes
 const getAllQRCodes = async (req, res, next) => {
@@ -30,13 +30,15 @@ const getQRCodeById = async (req, res, next) => {
 // Create a new QR code
 const createQRCode = async (req, res, next) => {
   try {
-    const { location, lat, lng, radius } = req.body;
+    const { location, workStartTime, workEndTime, allowedNetworkRanges } =
+      req.body;
 
     // if already exists
     const qrCodeExists = await QRCode.findOne({
-      lat,
-      lng,
-      radius,
+      location,
+      workStartTime,
+      workEndTime,
+      allowedNetworkRanges,
     }).exec();
 
     if (qrCodeExists) {
@@ -46,10 +48,9 @@ const createQRCode = async (req, res, next) => {
     // Create new QR code
     const qrCode = new QRCode({
       location,
-      lat,
-      lng,
-      radius
-
+      workStartTime,
+      workEndTime,
+      allowedNetworkRanges,
     });
 
     await qrCode.save();
@@ -61,13 +62,15 @@ const createQRCode = async (req, res, next) => {
 
 // Update an existing QR code
 const updateQRCode = async (req, res, next) => {
-  const { location, lat, lng, radius } = req.body;
+  const { location, workStartTime, workEndTime, allowedNetworkRanges } =
+    req.body;
   try {
     // if already exists
     const qrCodeExists = await QRCode.find({
-      lat,
-      lng,
-      radius,
+      location,
+      workStartTime,
+      workEndTime,
+      allowedNetworkRanges,
     }).exec();
 
     if (qrCodeExists.length > 1) {
@@ -81,9 +84,10 @@ const updateQRCode = async (req, res, next) => {
     }
 
     qrCode.location = location || qrCode.location;
-    qrCode.lat = lat !== undefined ? lat : qrCode.lat;
-    qrCode.lng = lng !== undefined ? lng : qrCode.lng;
-    qrCode.radius = radius !== undefined ? radius : qrCode.radius;
+    qrCode.workStartTime = workStartTime || qrCode.workStartTime;
+    qrCode.workEndTime = workEndTime || qrCode.workEndTime;
+    qrCode.allowedNetworkRanges =
+      allowedNetworkRanges || qrCode.allowedNetworkRanges;
 
     await qrCode.save();
     successResponse(res, qrCode, "QR Code updated successfully.");

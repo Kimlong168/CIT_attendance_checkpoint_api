@@ -11,10 +11,8 @@ const PORT = process.env.PORT || 3000;
 const db = require("./data/database");
 const { blacklistedTokens } = require("./middlewares/authMiddleware");
 const enableCors = require("./middlewares/cors");
-const { errorResponse } = require("./utils/responseHelpers");
-const {
-  sendAttendanceReport,
-} = require("./controllers/report.controller");
+const { errorResponse, successResponse } = require("./utils/responseHelpers");
+const { sendAttendanceReport } = require("./controllers/report.controller");
 const {
   recordAttendanceAbsentOrOnLeave,
   recordAttendanceMissCheckout,
@@ -45,28 +43,12 @@ app.use(
   })
 );
 
-// app.set("trust proxy", true);
-
-// app.use("/", (req, res) => {
-//   const userIp = req.ip;
-
-//   const allowedNetworkRanges = ["202.56.3."];
-
-//   // Check if the user's IP starts with any allowed range
-//   const isAllowed = allowedNetworkRanges.some((range) =>
-//     userIp.startsWith(range)
-//   );
-
-//   if (isAllowed) {
-//     res.send(`You are connected to the correct network! Welcome. ${userIp}`);
-//   } else {
-//     res
-//       .status(403)
-//       .send(
-//         `Access denied. You must be connected to the correct Wi-Fi network!!! ${userIp}`
-//       );
-//   }
-// });
+// Get the current user IP
+app.set("trust proxy", true);
+app.use("/api/get-current-ip", (req, res) => {
+  const userIp = req.ip;
+  return successResponse(res, { userIp }, "User IP retrieved successfully.");
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -75,7 +57,6 @@ app.use("/api/telegram", telegramRoutes);
 app.use("/api/qr-code", qrCodeRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
-
 
 // Schedule a cron job to send a message every day 00 1 * * * 1:00 AM
 cron.schedule("00 1 * * *", () => {

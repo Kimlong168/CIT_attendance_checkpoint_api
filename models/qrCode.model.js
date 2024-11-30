@@ -1,31 +1,37 @@
 const mongoose = require("mongoose");
 
+const networkRangeSchema = new mongoose.Schema({
+  wifiName: {
+    type: String,
+    required: true,
+  },
+  ip: {
+    type: String,
+    required: true,
+  },
+});
+
 const qrCodeSchema = new mongoose.Schema({
   location: {
     type: String,
     required: true,
   },
 
-  lat: {
-    type: Number,
+  workStartTime: {
+    type: Date,
     required: true,
   },
 
-  lng: {
-    type: Number,
+  workEndTime: {
+    type: Date,
     required: true,
   },
 
-  radius: {
-    type: Number, // Radius in meters within which the scan is valid
-    default: 20, // Example default radius of 50 meters
+  allowedNetworkRanges: {
+    type: [networkRangeSchema], // Array of objects with specific schema
+    required: true,
   },
-
-  // allowedNetworkRanges: {
-  //   type: [String],
-  //   required: true,
-  // },
-
+  
   created_at: {
     type: Date,
     default: Date.now,
