@@ -106,7 +106,7 @@ const checkInAttendance = async (req, res, next) => {
 
     // Check if the user's IP starts with any allowed range
     const isAllowed = qrCode.allowedNetworkRanges.some((range) =>
-      userIp.startsWith(range)
+      userIp.startsWith(range.ip)
     );
 
     if (!isAllowed) {
@@ -198,7 +198,7 @@ const checkOutAttendance = async (req, res, next) => {
 
     // Check if the user's IP starts with any allowed range
     const isAllowed = qrCode.allowedNetworkRanges.some((range) =>
-      userIp.startsWith(range)
+      userIp.startsWith(range.ip)
     );
 
     if (!isAllowed) {
