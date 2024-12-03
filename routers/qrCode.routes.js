@@ -36,4 +36,5 @@ router.put(
 
 router.delete("/:id", authenticateToken, qrCode.deleteQRCode);
 
+
 module.exports = router;

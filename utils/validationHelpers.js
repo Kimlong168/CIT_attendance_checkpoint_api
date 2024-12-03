@@ -45,13 +45,13 @@ const validateQRCodeBody = () => {
     body("workStartTime")
       .notEmpty()
       .withMessage("Work start time is required.")
-      .isISO8601()
-      .withMessage("Work start time must be a valid ISO 8601 date."),
+      .isString()
+      .withMessage("Work start time must be a string."),
     body("workEndTime")
       .notEmpty()
       .withMessage("Work end time is required.")
-      .isISO8601()
-      .withMessage("Work end time must be a valid ISO 8601 date."),
+      .isString()
+      .withMessage("Work end time must be a string."),
 
     body("allowedNetworkRanges.*.wifiName")
       .notEmpty()

@@ -30,7 +30,7 @@ router.get(
 router.post(
   "/",
   authenticateToken,
-  verifyRole(["cashier", "inventoryStaff"]),
+  verifyRole(["user"]),
   validateLeaveRequestBody(),
   validationMiddleware,
   leaveRequestController.createLeaveRequest
@@ -39,7 +39,7 @@ router.post(
 router.put(
   "/:id",
   authenticateToken,
-  verifyRole(["cashier", "inventoryStaff"]),
+  verifyRole(["user"]),
   validateLeaveRequestBody(),
   validationMiddleware,
   leaveRequestController.updateLeaveRequest
@@ -55,7 +55,7 @@ router.delete(
 router.delete(
   "/:id",
   authenticateToken,
-  verifyRole(["cashier", "inventoryStaff"]),
+  verifyRole(["user"]),
   leaveRequestController.deleteLeaveRequest
 );
 

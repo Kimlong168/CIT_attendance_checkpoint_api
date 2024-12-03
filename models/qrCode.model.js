@@ -18,12 +18,12 @@ const qrCodeSchema = new mongoose.Schema({
   },
 
   workStartTime: {
-    type: Date,
+    type: String,
     required: true,
   },
 
   workEndTime: {
-    type: Date,
+    type: String,
     required: true,
   },
 
@@ -31,7 +31,7 @@ const qrCodeSchema = new mongoose.Schema({
     type: [networkRangeSchema], // Array of objects with specific schema
     required: true,
   },
-  
+
   created_at: {
     type: Date,
     default: Date.now,
