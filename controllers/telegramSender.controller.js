@@ -21,7 +21,6 @@ const sendImage = async (req, res, next) => {
   const caption = req.body.caption;
   const chat_id = req.body.chat_id;
 
-
   if (!req.file && !req.body.image) {
     return errorResponse(res, "Image is required", 400);
   }
@@ -51,7 +50,9 @@ const sendImage = async (req, res, next) => {
   }
 };
 
+
 module.exports = {
   sendMessage,
   sendImage,
+ 
 };

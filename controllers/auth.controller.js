@@ -208,4 +208,69 @@ const refreshToken = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, logout, refreshToken };
+const requestOtp = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      return errorResponse(res, "User not found", 404);
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const chat_id = user.chat_id;
+
+    if (!chat_id) {
+      return errorResponse(
+        res,
+        "Chat ID is required, This user has no Chat ID!",
+        400
+      );
+    }
+
+    const message = `
+    *Hello, ${user.name}!*
+    \nYour OTP code is: \`${otp}\`
+    \nPlease use this code to complete your process.
+    \n⚠️ *Do not share it with anyone!*
+    `.trim(); // Ensure no extra spaces or newlines
+
+    await sendTelegramMessage(message, chat_id);
+
+    //  save in the session
+    req.session.otp = otp;
+    req.session.email = req.body.email;
+    req.session.chat_id = chat_id;
+    req.session.otpExpiry = Date.now() + 60000 * 2; // 2 minutes expiry
+    console.log("OTP saved successfully");
+
+    successResponse(res, null, "OTP sent successfully");
+  } catch (err) {
+    next(err);
+  }
+};
+
+const verifyOtp = async (req, res) => {
+  const { otp } = req.body;
+
+  console.log(req.session, otp);
+
+  if (req.session.otp == otp) {
+    req.session.otp = null; // Clear OTP
+    // check if the OTP is expired
+    if (Date.now() > req.session.otpExpiry) {
+      return errorResponse(res, "OTP expired", 400);
+    }
+    successResponse(res, null, "OTP verified successfully");
+  } else {
+    errorResponse(res, "Invalid OTP", 400);
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  logout,
+  refreshToken,
+  requestOtp,
+  verifyOtp,
+};

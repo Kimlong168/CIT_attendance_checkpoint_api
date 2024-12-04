@@ -10,11 +10,13 @@ const sendTelegramMessage = async (message, chat_id, topic_id) => {
         chat_id: chatId,
         text: message,
         message_thread_id: topic_id,
+        parse_mode: "Markdown",
       });
     } else {
       await axios.post(url, {
         chat_id: chatId,
         text: message,
+        parse_mode: "Markdown",
       });
     }
 

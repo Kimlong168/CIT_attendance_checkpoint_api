@@ -26,4 +26,8 @@ router.post("/logout", authController.logout);
 
 router.post("/refresh-token", authenticateToken, authController.refreshToken);
 
+router.post("/request-otp", authController.requestOtp);
+
+router.post("/verify-otp", authController.verifyOtp);
+
 module.exports = router;
