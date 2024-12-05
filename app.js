@@ -2,8 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const cron = require("node-cron");
-const session = require("express-session");
 const bodyParser = require("body-parser");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const mongoURI = process.env.MONGODB_URI;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,7 +33,7 @@ const attendanceRoutes = require("./routers/attendance.routes");
 const leaveRequestRoutes = require("./routers/leaveRequests.routes");
 
 // Get the current user IP
-app.set("trust proxy", 1);
+app.set("trust proxy", true);
 app.use(enableCors);
 app.use(bodyParser.json());
 app.use(express.json());
@@ -41,6 +43,11 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    store: new MongoStore({
+      mongoUrl: mongoURI, // Directly provide the MongoDB URL
+      collection: "sessions",
+      ttl: 5 * 60,
+    }),
     cookie: {
       secure: process.env.NODE_ENV === "production", // use true for https (production)
       httpOnly: true,
