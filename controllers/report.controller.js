@@ -99,7 +99,7 @@ const sendAttendanceReport = async (dateQuery) => {
     await sendTelegramMessage(
       reportMessage,
       process.env.TELEGRAM_CHAT_ID,
-      process.env.TELEGRAM_TOPIC_ATTENDANCE_ID
+      process.env.TELEGRAM_TOPIC_ATTENDANCE_REPORT_ID
     );
     console.log("Attendance report sent to Telegram");
   } catch (error) {
