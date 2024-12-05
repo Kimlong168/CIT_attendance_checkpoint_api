@@ -78,7 +78,7 @@ const updatePassword = async (req, res, next) => {
     await user.save();
 
     await sendTelegramMessage(
-      `Password Updated Successfully 🟨
+      `*Password Updated Successfully* 🟨
       \n👮 Name: ${user.name} (${user.role})
       \n📧 Email: ${user.email}
       \n🕒 Date & Time: ${getFormattedDate(
@@ -106,7 +106,7 @@ const resetPassword = async (req, res, next) => {
     await user.save();
 
     await sendTelegramMessage(
-      `Password Reseted Successfully 🟦
+      `*Password Reseted Successfully* 🟦
       \n👮 Name: ${user.name} (${user.role})
       \n📧 Email: ${user.email}
       \n🕒 Date & Time: ${getFormattedDate(

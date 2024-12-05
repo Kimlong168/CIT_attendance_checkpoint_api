@@ -131,7 +131,7 @@ const getAttendanceReportMonthly = async (req, res, next) => {
     });
 
     const employees = await User.find({
-      role: { $in: ["cashier", "inventoryStaff"] },
+      role: { $in: ["user"] },
     }).select("name role email");
 
     const data = employees.map((employee) => {

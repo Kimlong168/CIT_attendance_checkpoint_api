@@ -135,14 +135,14 @@ const createLeaveRequest = async (req, res, next) => {
 
     await sendTelegramMessage(
       `
-    🌟 New Leave Request Submitted 🌟
+    🌟 *New Leave Request Submitted* 🌟
     \n👤 Employee: ${req.user.name} (${req.user.role})
     \n📄 Leave Type: ${req.body.type}
     \n🗓️ Start Date: ${getFormattedDate(req.body.start_date)}
     \n🗓️ End Date: ${getFormattedDate(req.body.end_date)}
     \n🗓️ Request Date: ${getFormattedDate(new Date())}
     \n📝 Reason: ${req.body.reason}
-    \n🙈 Review Now: ${process.env.CLIENT_SIDE_URL}/leaveRequest/approve/${
+    \n👀 Review Now: ${process.env.CLIENT_SIDE_URL}/leaveRequest/approve/${
         leaveRequest._id
       }
   `,
@@ -209,7 +209,7 @@ const deleteLeaveRequest = async (req, res, next) => {
 
     await sendTelegramMessage(
       `
-    Leave Request Deleted ❌
+    *Leave Request Deleted* ❌
     \n👤 Employee: ${req.user.name}
     \n📅 Deleted Date: ${getFormattedDate(new Date())}
   `,
@@ -244,7 +244,7 @@ const approveOrRejectLeave = async (req, res, next) => {
     const employee = await User.findById(leaveRequest.employee);
 
     const approvalMessage = `
-🎉 Your Leave Request Has Been Approved 🎉
+🎉 *Your Leave Request Has Been Approved* 🎉
 
 \n👤 Employee: ${employee.name} (${employee.role})
 \n📄 Leave Type: ${leaveRequest.type}
@@ -257,7 +257,7 @@ We wish you a restful time off! If you have any questions, feel free to reach ou
 `;
 
     const rejectionMessage = `
-❌ Your Leave Request Has Been Rejected ❌
+❌ *Your Leave Request Has Been Rejected* ❌
 
 \n👤 Employee: ${employee.name} (${employee.role})
 \n📄 Leave Type: ${leaveRequest.type}
@@ -270,7 +270,7 @@ If you have any questions or need further clarification, please contact your man
 `;
 
     const pendingMessage = `
-🔄 Your Leave Request Status Has Changed to Pending 🔄
+🔄 *Your Leave Request Status Has Changed to Pending* 🔄
 
 \n👤 Employee: ${employee.name} (${employee.role})
 \n📄 Leave Type: ${leaveRequest.type}
@@ -329,7 +329,7 @@ const rejectLeaveRequestAfterEndDate = async () => {
       const employee = await User.findById(leaveRequest.employee);
 
       const rejectionMessage = `
-      ❌ Your Leave Request Has Been Rejected ❌
+      ❌ *Your Leave Request Has Been Rejected* ❌
       
       \n👤 Employee: ${employee.name} (${employee.role})
       \n📄 Leave Type: ${leaveRequest.type}

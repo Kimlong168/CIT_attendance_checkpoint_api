@@ -30,6 +30,8 @@ const qrCodeRoutes = require("./routers/qrCode.routes");
 const attendanceRoutes = require("./routers/attendance.routes");
 const leaveRequestRoutes = require("./routers/leaveRequests.routes");
 
+// Get the current user IP
+app.set("trust proxy", true);
 app.use(enableCors);
 app.use(bodyParser.json());
 app.use(express.json());
@@ -47,8 +49,6 @@ app.use(
   })
 );
 
-// Get the current user IP
-app.set("trust proxy", true);
 app.use("/api/get-current-ip", (req, res) => {
   const userIp = req.ip;
   return successResponse(res, { userIp }, "User IP retrieved successfully.");

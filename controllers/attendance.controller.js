@@ -138,8 +138,8 @@ const checkInAttendance = async (req, res, next) => {
     const employeeData = await User.findById(employee);
 
     await sendTelegramMessage(
-      `Attendance Check In 🟩
-      \n🆔 ID: ${result._id}
+      `*Attendance Check In* 🟩
+      \n🆔 ID: \`${result._id}\`
       \n👤 Employee: ${employeeData.name} (${employeeData.role})
       \n💰 Time In: ${getFormattedTimeWithAMPM(time_in)}
       \n📅 Date: ${getFormattedDate(new Date())}
@@ -226,8 +226,8 @@ const checkOutAttendance = async (req, res, next) => {
     const employeeData = await User.findById(employee);
 
     await sendTelegramMessage(
-      `Attendance Check Out 🟥
-      \n🆔 ID: ${result._id}
+      `*Attendance Check Out* 🟥
+      \n🆔 ID: \`${result._id}\`
       \n👤 Employee: ${employeeData.name} (${employeeData.role})
       \n💰 Time Out: ${getFormattedTimeWithAMPM(time_out)}
       \n📅 Date: ${getFormattedDate(new Date())}

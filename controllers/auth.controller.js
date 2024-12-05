@@ -47,7 +47,7 @@ const register = async (req, res, next) => {
     if (image.secure_url) {
       await sendTelegramImage(
         image.secure_url,
-        `New User Created 👤
+        `*New User Created* 👤
       \n🆔 Name: ${req.body.name}
       \n📧 Email: ${req.body.email}
       \n👮 Role: ${req.body.role}
@@ -57,7 +57,7 @@ const register = async (req, res, next) => {
       );
     } else {
       await sendTelegramMessage(
-        `New User Created 👤
+        `*New User Created* 👤
         \n🆔 Name: ${req.body.name}
         \n📧 Email: ${req.body.email}
         \n👮 Role: ${req.body.role}
@@ -111,7 +111,7 @@ const login = async (req, res, next) => {
 
   // Send the telegram group
   await sendTelegramMessage(
-    `User Login Successful 🟩
+    `*User Login Successful* 🟩
     \n👮 Name: ${user.name} (${user.role})
     \n📧 Email: ${user.email}
     \n🕒 Date & Time: ${getFormattedDate(
@@ -141,7 +141,7 @@ const logout = async (req, res, next) => {
     // Send the telegram group
 
     await sendTelegramMessage(
-      `User Logout Successful 🟥
+      `*User Logout Successful* 🟥
       \n👮 Name: ${req.body.name} (${req.body.role})
       \n📧 Email: ${req.body.email}
       \n🕒 Date & Time: ${getFormattedDate(

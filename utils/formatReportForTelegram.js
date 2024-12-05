@@ -5,11 +5,11 @@ const {
 
 const formatAttendanceReportForTelegram = (data) => {
   const reportMessage = `
-📅 Attendance Report: ${getFormattedDate(data.report_date)}
+📅 *Attendance Report:* ${getFormattedDate(data.report_date)}
 
-👥 Total Attendance: ${data.total_attendance}
+👥 *Total Attendance:* ${data.total_attendance}
 
-⏰ Late Employees:
+⏰ *Late Employees:*
 ${
   data.late_employees
     .map(
@@ -18,7 +18,7 @@ ${
     .join("\n") || "None"
 }
 
-🏃‍♂️ Early Check-out Employees:
+🏃‍♂️ *Early Check-out Employees:*
 ${
   data.early_check_out_employees
     .map(
@@ -28,26 +28,26 @@ ${
     .join("\n") || "None"
 }
 
-🚫 Missed Check-out Employees:
+🚫 *Missed Check-out Employees:*
 ${
   data.missed_check_out_employees
     .map((item) => `- ${item.employee.name}`)
     .join("\n") || "None"
 }
 
-❌ Absent Employees:
+❌ *Absent Employees:*
 ${
   data.absent_employees.map((item) => `- ${item.employee.name}`).join("\n") ||
   "None"
 }
 
-🌴 On Leave Employees:
+🌴 *On Leave Employees:*
 ${
   data.on_leave_employees.map((item) => `- ${item.employee.name}`).join("\n") ||
   "None"
 }
 
-✅ Normal Checked Out Employees:
+✅ *Normal Checked Out Employees:*
 ${
   data.normal_checked_out_employees
     .map(
@@ -57,7 +57,7 @@ ${
     .join("\n") || "None"
 }
 
-⏳ On Time Employees:
+⏳ *On Time Employees:*
 ${
   data.on_time_employees
     .map(
