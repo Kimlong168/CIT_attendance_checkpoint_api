@@ -241,6 +241,7 @@ const requestOtp = async (req, res, next) => {
     req.session.email = req.body.email;
     req.session.chat_id = chat_id;
     req.session.otpExpiry = Date.now() + 60000 * 2; // 2 minutes expiry
+    req.session.save();
     console.log("OTP saved successfully");
     console.log(req.session);
 

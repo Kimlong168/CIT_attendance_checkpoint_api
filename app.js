@@ -42,7 +42,7 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false, // Don't create sessions unless necessary
+    saveUninitialized: false, // Don't create sessions unless necessary (old true)
     store: new MongoStore({
       mongoUrl: process.env.MONGODB_URI, // MongoDB URI from environment
       collection: "sessions", // Store sessions in the "sessions" collection
