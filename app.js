@@ -49,7 +49,7 @@ app.use(
       ttl: 5 * 60, // Session expiration time (5 minutes for OTP)
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production", // Use true for HTTPS in production
+      secure: process.env.NODE_ENV == "production", // Use true for HTTPS in production
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // Session cookie expires in 1 day
     },
