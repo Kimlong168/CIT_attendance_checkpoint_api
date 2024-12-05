@@ -31,7 +31,7 @@ const attendanceRoutes = require("./routers/attendance.routes");
 const leaveRequestRoutes = require("./routers/leaveRequests.routes");
 
 // Get the current user IP
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
 app.use(enableCors);
 app.use(bodyParser.json());
 app.use(express.json());
