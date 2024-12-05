@@ -42,16 +42,16 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, // Don't create sessions unless necessary
     store: new MongoStore({
-      mongoUrl: mongoURI, // Directly provide the MongoDB URL
-      collection: "sessions",
-      ttl: 5 * 60,
+      mongoUrl: process.env.MONGODB_URI, // MongoDB URI from environment
+      collection: "sessions", // Store sessions in the "sessions" collection
+      ttl: 5 * 60, // Session expiration time (5 minutes for OTP)
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production", // use true for https (production)
+      secure: process.env.NODE_ENV === "production", // Use true for HTTPS in production
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24,
+      maxAge: 1000 * 60 * 60 * 24, // Session cookie expires in 1 day
     },
   })
 );
