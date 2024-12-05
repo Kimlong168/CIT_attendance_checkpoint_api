@@ -39,7 +39,11 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true }, // Use true in production with HTTPS
+    cookie: {
+      secure: process.env.NODE_ENV === "production", // use true for https (production)
+      // httpOnly: true,
+      // maxAge: 1000 * 60 * 60 * 24,
+    },
   })
 );
 

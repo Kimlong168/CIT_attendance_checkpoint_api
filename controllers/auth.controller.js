@@ -106,7 +106,7 @@ const login = async (req, res, next) => {
   const refreshToken = jwt.sign(
     { name: user.name, email: user.email, role: user.role, id: user._id },
     process.env.JWT_SECRET,
-    { expiresIn: "5h" }
+    { expiresIn: "3d" }
   );
 
   // Send the telegram group
@@ -194,7 +194,7 @@ const refreshToken = async (req, res, next) => {
         },
         process.env.JWT_SECRET,
         {
-          expiresIn: "5h",
+          expiresIn: "3d",
         }
       );
       successResponse(
