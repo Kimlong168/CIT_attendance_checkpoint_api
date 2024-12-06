@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const Session = require("../models/session.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { successResponse, errorResponse } = require("../utils/responseHelpers");
@@ -236,14 +237,21 @@ const requestOtp = async (req, res, next) => {
 
     await sendTelegramMessage(message, chat_id);
 
+    // Save the OTP in the database
+    await Session.create({
+      email: req.body.email,
+      otp,
+      expiresAt: new Date(Date.now() + 60000 * 2),
+    }); // 2 minutes expiry
+
     //  save in the session
-    req.session.otp = otp;
-    req.session.email = req.body.email;
-    req.session.chat_id = chat_id;
-    req.session.otpExpiry = Date.now() + 60000 * 2; // 2 minutes expiry
-    req.session.save();
-    console.log("OTP saved successfully");
-    console.log(req.session);
+    // req.session.otp = otp;
+    // req.session.email = req.body.email;
+    // req.session.chat_id = chat_id;
+    // req.session.otpExpiry = Date.now() + 60000 * 2; // 2 minutes expiry
+    // req.session.save();
+    // console.log("OTP saved successfully");
+    // console.log(req.session);
 
     successResponse(res, null, "OTP sent successfully");
   } catch (err) {
@@ -252,20 +260,36 @@ const requestOtp = async (req, res, next) => {
 };
 
 const verifyOtp = async (req, res) => {
-  const { otp } = req.body;
+  const { email, otp } = req.body;
 
-  console.log(req.session, otp);
+  try {
+    const record = await Session.findOne({ email, otp });
 
-  if (req.session.otp == otp) {
-    req.session.otp = null; // Clear OTP
-    // check if the OTP is expired
-    if (Date.now() > req.session.otpExpiry) {
+    if (!record) {
+      return errorResponse(res, "Invalid OTP", 400);
+    }
+
+    if (new Date() > record.expiresAt) {
       return errorResponse(res, "OTP expired", 400);
     }
+
+    await Session.deleteMany({ email }); // Remove all OTPs for the user
     successResponse(res, null, "OTP verified successfully");
-  } else {
-    errorResponse(res, "Invalid OTP", 400);
+  } catch (err) {
+    next(err);
   }
+
+  // console.log(req.session, otp);
+  // if (req.session.otp == otp) {
+  //   req.session.otp = null; // Clear OTP
+  //   // check if the OTP is expired
+  //   if (Date.now() > req.session.otpExpiry) {
+  //     return errorResponse(res, "OTP expired", 400);
+  //   }
+  //   successResponse(res, null, "OTP verified successfully");
+  // } else {
+  //   errorResponse(res, "Invalid OTP", 400);
+  // }
 };
 
 module.exports = {

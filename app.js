@@ -1,11 +1,9 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
 const cron = require("node-cron");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
-const mongoURI = process.env.MONGODB_URI;
+// const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,12 +40,7 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false, // Don't create sessions unless necessary (old true)
-    store: new MongoStore({
-      mongoUrl: process.env.MONGODB_URI, // MongoDB URI from environment
-      collection: "sessions", // Store sessions in the "sessions" collection
-      ttl: 5 * 60, // Session expiration time (5 minutes for OTP)
-    }),
+    saveUninitialized: true,
     cookie: {
       secure: process.env.NODE_ENV == "production", // Use true for HTTPS in production
       httpOnly: true,
