@@ -104,8 +104,15 @@ const checkInAttendance = async (req, res, next) => {
 
     // Validate that the employee's wifi network is within a valid range of the QR code location
     const userIp = req.ip;
+    const allowedNetworkRanges = qrCode.allowedNetworkRanges.map(
+      (range) => range.ip
+    );
 
-    if (!ipRangeCheck(userIp, qrCode.allowedNetworkRanges)) {
+    console.log("userIp", userIp);
+    console.log("qrCode.allowedNetworkRanges", qrCode.allowedNetworkRanges);
+    console.log("allowedNetworkRanges", allowedNetworkRanges);
+
+    if (!ipRangeCheck(userIp, allowedNetworkRanges)) {
       const wifiNames = qrCode.allowedNetworkRanges
         .map((range) => range.wifiName)
         .join(", ");
@@ -191,8 +198,15 @@ const checkOutAttendance = async (req, res, next) => {
 
     // Validate that the employee's wifi network is within a valid range of the QR code location
     const userIp = req.ip;
+    const allowedNetworkRanges = qrCode.allowedNetworkRanges.map(
+      (range) => range.ip
+    );
 
-    if (!ipRangeCheck(userIp, qrCode.allowedNetworkRanges)) {
+    console.log("userIp", userIp);
+    console.log("qrCode.allowedNetworkRanges", qrCode.allowedNetworkRanges);
+    console.log("allowedNetworkRanges", allowedNetworkRanges);
+
+    if (!ipRangeCheck(userIp, allowedNetworkRanges)) {
       const wifiNames = qrCode.allowedNetworkRanges
         .map((range) => range.wifiName)
         .join(", ");
