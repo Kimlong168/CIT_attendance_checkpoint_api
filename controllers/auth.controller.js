@@ -238,11 +238,13 @@ const requestOtp = async (req, res, next) => {
     await sendTelegramMessage(message, chat_id);
 
     // Save the OTP in the database
-    await Session.create({
+    const result = await Session.create({
       email: req.body.email,
       otp,
       expiresAt: new Date(Date.now() + 60000 * 2),
     }); // 2 minutes expiry
+
+    console.log("otp result", result);
 
     //  save in the session
     // req.session.otp = otp;
@@ -263,7 +265,10 @@ const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
 
   try {
-    const record = await Session.findOne({ email, otp });
+    const record = await Session.findOne({
+      email: String(email),
+      otp: String(otp),
+    });
 
     if (!record) {
       return errorResponse(res, "Invalid OTP", 400);

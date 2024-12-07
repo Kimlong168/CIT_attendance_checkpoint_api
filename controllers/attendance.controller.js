@@ -2,6 +2,7 @@ const Attendance = require("../models/attendance.model");
 const User = require("../models/user.model");
 const QRCode = require("../models/qrCode.model");
 const LeaveRequest = require("../models/leaveRequest.model");
+const ipRangeCheck = require("ip-range-check");
 const { successResponse, errorResponse } = require("../utils/responseHelpers");
 const { calculateDistance } = require("../utils/calculateDistance");
 const { sendTelegramMessage } = require("../utils/sendTelegramMessage");
@@ -104,12 +105,7 @@ const checkInAttendance = async (req, res, next) => {
     // Validate that the employee's wifi network is within a valid range of the QR code location
     const userIp = req.ip;
 
-    // Check if the user's IP starts with any allowed range
-    const isAllowed = qrCode.allowedNetworkRanges.some((range) =>
-      userIp.startsWith(range.ip)
-    );
-
-    if (!isAllowed) {
+    if (!ipRangeCheck(userIp, qrCode.allowedNetworkRanges)) {
       const wifiNames = qrCode.allowedNetworkRanges
         .map((range) => range.wifiName)
         .join(", ");
@@ -196,12 +192,7 @@ const checkOutAttendance = async (req, res, next) => {
     // Validate that the employee's wifi network is within a valid range of the QR code location
     const userIp = req.ip;
 
-    // Check if the user's IP starts with any allowed range
-    const isAllowed = qrCode.allowedNetworkRanges.some((range) =>
-      userIp.startsWith(range.ip)
-    );
-
-    if (!isAllowed) {
+    if (!ipRangeCheck(userIp, qrCode.allowedNetworkRanges)) {
       const wifiNames = qrCode.allowedNetworkRanges
         .map((range) => range.wifiName)
         .join(", ");
@@ -259,7 +250,7 @@ const deleteAttendance = async (req, res, next) => {
 const recordAttendanceAbsentOrOnLeave = async () => {
   try {
     const employees = await User.find({
-      role: { $in: ["cashier", "inventoryStaff"] },
+      role: { $in: ["user"] },
     });
 
     for (const employee of employees) {
@@ -310,7 +301,7 @@ const recordAttendanceAbsentOrOnLeave = async () => {
 const recordAttendanceMissCheckout = async () => {
   try {
     const employees = await User.find({
-      role: { $in: ["cashier", "inventoryStaff"] },
+      role: { $in: ["user"] },
     });
 
     for (const employee of employees) {
