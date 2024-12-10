@@ -32,11 +32,16 @@ const getFormattedTimeWithAMPM = (isoString) => {
   return date.toLocaleTimeString("en-GB", options);
 };
 
-// get formatted date and time with AM and PM
-
-
+//convert to date
+const convertTimeToDate = (timeString) => {
+  const [hours, minutes] = timeString.split(":").map(Number); // Split and parse the time string
+  const now = new Date(); // Get the current date
+  now.setHours(hours, minutes, 0, 0); // Set hours and minutes, reset seconds and milliseconds
+  return now;
+};
 
 module.exports = {
   getFormattedDate,
   getFormattedTimeWithAMPM,
+  convertTimeToDate,
 };

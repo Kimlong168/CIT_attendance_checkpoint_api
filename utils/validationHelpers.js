@@ -163,6 +163,37 @@ const validateStatusLeaveRequestBody = () => {
   ];
 };
 
+const validateClientVisitLogBody = () => {
+  return [
+    body("purpose")
+      .notEmpty()
+      .withMessage("Purpose is required.")
+      .isString()
+      .withMessage("Purpose must be a string."),
+    body("agentName")
+      .notEmpty()
+      .withMessage("Agent name is required.")
+      .isString()
+      .withMessage("Agent name must be a string."),
+    body("date")
+      .notEmpty()
+      .withMessage("Date is required.")
+      .isISO8601()
+      .withMessage("Date must be a valid date."),
+    body("startTime")
+      .notEmpty()
+      .withMessage("Start time is required.")
+      .isISO8601()
+      .withMessage("Start time must be a valid date."),
+    body("expectedEndTime")
+      .notEmpty()
+      .withMessage("Expected end time is required.")
+      .isISO8601()
+      .withMessage("Expected end time must be a valid date."),
+    // body("notes").optional().isString().withMessage("Notes must be a string."),
+  ];
+};
+
 module.exports = {
   validationMiddleware,
   validateUserBody,
@@ -173,4 +204,5 @@ module.exports = {
   validateTelegramImageBody,
   validateLeaveRequestBody,
   validateStatusLeaveRequestBody,
+  validateClientVisitLogBody,
 };

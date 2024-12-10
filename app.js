@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 const db = require("./data/database");
 const { blacklistedTokens } = require("./middlewares/authMiddleware");
+const skipSundayMiddleware = require("./middlewares/skipSundayMiddleware");
 const enableCors = require("./middlewares/cors");
 const { errorResponse, successResponse } = require("./utils/responseHelpers");
 const { sendAttendanceReport } = require("./controllers/report.controller");
@@ -29,6 +30,7 @@ const telegramRoutes = require("./routers/telegramSender.routes");
 const qrCodeRoutes = require("./routers/qrCode.routes");
 const attendanceRoutes = require("./routers/attendance.routes");
 const leaveRequestRoutes = require("./routers/leaveRequests.routes");
+const clientVisitLogRoutes = require("./routers/clientVisitLog.routes");
 
 // Get the current user IP
 app.set("trust proxy", true);
@@ -61,6 +63,7 @@ app.use("/api/telegram", telegramRoutes);
 app.use("/api/qr-code", qrCodeRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
+app.use("/api/client-visit-log", clientVisitLogRoutes);
 
 // Schedule a cron job to send a message every day 00 1 * * * 1:00 AM
 cron.schedule("00 1 * * *", () => {
@@ -71,24 +74,35 @@ cron.schedule("00 1 * * *", () => {
 });
 
 // Schedule a cron job to record attendance every time 00 17 * * * 5:00 PM
-cron.schedule("00 17 * * *", () => {
-  console.log(
-    "Running cron job at 5:00 PM to record attendance absent or on leave"
-  );
-  recordAttendanceAbsentOrOnLeave();
-});
+cron.schedule(
+  "00 17 * * *", // 5:00 PM
+  skipSundayMiddleware(() => {
+    console.log(
+      "Running cron job at 5:00 PM to record attendance absent or on leave"
+    );
+    recordAttendanceAbsentOrOnLeave();
+  })
+);
 
 // Schedule a cron job to record attendance every time 00 19 * * * 7:00 PM
-cron.schedule("00 19 * * *", () => {
-  console.log("Running cron job at 7:00 PM to record attendance miss checkout");
-  recordAttendanceMissCheckout();
-});
+cron.schedule(
+  "00 19 * * *", // 7:00 PM
+  skipSundayMiddleware(() => {
+    console.log(
+      "Running cron job at 7:00 PM to record attendance miss checkout"
+    );
+    recordAttendanceMissCheckout();
+  })
+);
 
 // Schedule a cron job to send a message every day 30 19 * * * 7:30 PM
-cron.schedule("30 19 * * *", () => {
-  console.log("Running cron job at 11:59 PM to send attendance report");
-  sendAttendanceReport(new Date());
-});
+cron.schedule(
+  "30 19 * * *", // 7:30 PM
+  skipSundayMiddleware(() => {
+    console.log("Running cron job at 7:30 PM to send attendance report");
+    sendAttendanceReport(new Date());
+  })
+);
 
 // error handling middleware
 app.use((err, req, res, next) => {

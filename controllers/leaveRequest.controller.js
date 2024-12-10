@@ -114,7 +114,7 @@ const createLeaveRequest = async (req, res, next) => {
     if (existingLeaveRequest) {
       return errorResponse(
         res,
-        "You already have a pending leave request",
+        "You already had a pending leave request!",
         400
       );
     }
@@ -135,11 +135,15 @@ const createLeaveRequest = async (req, res, next) => {
 
     await sendTelegramMessage(
       `
-    🌟 *New Leave Request Submitted* 🌟
+    🆕 *New Leave Request Submitted* 
+    \n🆔 ID: \`${leaveRequest._id}\`
     \n👤 Employee: ${req.user.name} (${req.user.role})
     \n📄 Leave Type: ${req.body.type}
     \n🗓️ Start Date: ${getFormattedDate(req.body.start_date)}
     \n🗓️ End Date: ${getFormattedDate(req.body.end_date)}
+    \n🗓️ Days: ${leaveRequest.numberOfDays} ${
+        leaveRequest.numberOfDays == 1 ? "day" : "days"
+      }
     \n🗓️ Request Date: ${getFormattedDate(new Date())}
     \n📝 Reason: ${req.body.reason}
     \n👀 Review Now: ${process.env.CLIENT_SIDE_URL}/leaveRequest/approve/${
@@ -178,6 +182,27 @@ const updateLeaveRequest = async (req, res, next) => {
     );
     await leaveRequest.save();
 
+    await sendTelegramMessage(
+      `
+    🌟 *Leave Request Updated* 
+    \n🆔 ID: \`${leaveRequest._id}\`
+    \n👤 Employee: ${req.user.name} (${req.user.role})
+    \n📄 Leave Type: ${req.body.type}
+    \n🗓️ Start Date: ${getFormattedDate(req.body.start_date)}
+    \n🗓️ End Date: ${getFormattedDate(req.body.end_date)}
+    \n🗓️ Days: ${leaveRequest.numberOfDays} ${
+        leaveRequest.numberOfDays == 1 ? "day" : "days"
+      }
+    \n🗓️ Request Date: ${getFormattedDate(new Date())}
+    \n📝 Reason: ${req.body.reason}
+    \n👀 Review Now: ${process.env.CLIENT_SIDE_URL}/leaveRequest/approve/${
+        leaveRequest._id
+      }
+  `,
+      process.env.TELEGRAM_CHAT_ID,
+      process.env.TELEGRAM_TOPIC_LEAVE_REQUEST_ID
+    );
+
     return successResponse(
       res,
       leaveRequest,
@@ -210,6 +235,7 @@ const deleteLeaveRequest = async (req, res, next) => {
     await sendTelegramMessage(
       `
     *Leave Request Deleted* ❌
+    \n🆔 ID: \`${leaveRequest._id}\`
     \n👤 Employee: ${req.user.name}
     \n📅 Deleted Date: ${getFormattedDate(new Date())}
   `,
