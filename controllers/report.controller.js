@@ -147,7 +147,7 @@ const getAttendanceReportMonthly = async (req, res, next) => {
       };
 
       attendance.forEach((item) => {
-        if (item.employee._id.toString() === employee._id.toString()) {
+        if (item.employee?._id.toString() === employee?._id.toString()) {
           if (item.check_in_status === "Late") {
             attendanceData.late++;
           } else if (item.check_out_status === "Early Check-out") {

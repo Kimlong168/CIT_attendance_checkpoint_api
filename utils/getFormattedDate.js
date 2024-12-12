@@ -14,22 +14,48 @@ const getFormattedDate = (isoString) => {
 
 // get time with AM and PM
 
+// const getFormattedTimeWithAMPM = (isoString) => {
+//   if (!isoString) {
+//     return "";
+//   }
+//   const date = new Date(isoString);
+
+//   // Options for the date format, including seconds
+//   const options = {
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     second: "2-digit",
+//     hour12: true,
+//   };
+
+//   // Formatting the date to include hours, minutes, and seconds with AM/PM
+//   return date.toLocaleTimeString("en-GB", options);
+// };
+
 const getFormattedTimeWithAMPM = (isoString) => {
-  if (!isoString) {
-    return "";
-  }
+  // Create a Date object from the ISO string
   const date = new Date(isoString);
 
-  // Options for the date format, including seconds
-  const options = {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  };
+  // Get the hours, minutes, and seconds in the local time
+  let hours = date.getHours(); // Returns hours in 24-hour format (local time)
+  const minutes = date.getMinutes(); // Get minutes
+  const seconds = date.getSeconds(); // Get seconds
+  let period = "AM"; // Default period is AM
 
-  // Formatting the date to include hours, minutes, and seconds with AM/PM
-  return date.toLocaleTimeString("en-GB", options);
+  // Handle conversion from 24-hour to 12-hour format
+  if (hours >= 12) {
+    period = "PM";
+    if (hours > 12) {
+      hours -= 12; // Convert hours to 12-hour format
+    }
+  } else if (hours === 0) {
+    hours = 12; // Convert midnight (00:00) to 12:00 AM
+  }
+
+  // Return the formatted time in 12-hour format with seconds
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")} ${period}`;
 };
 
 //convert to date
