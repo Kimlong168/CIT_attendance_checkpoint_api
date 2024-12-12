@@ -109,8 +109,6 @@ const createClientVisitLog = async (req, res, next) => {
       req.body.expectedEndTime
     )}
     \n📝 Notes: ${req.body.notes ? req.body.notes : "No note"}
-    \n👀 Review Now: ${process.env.CLIENT_SIDE_URL}/clientVisitLog/${
-        clientVisitLog._id
       }
   `,
       process.env.TELEGRAM_CHAT_ID,
@@ -158,9 +156,6 @@ const updateClientVisitLog = async (req, res, next) => {
       req.body.expectedEndTime
     )}
     \n📝 Notes: ${req.body.notes ? req.body.notes : "No note"}
-    \n👀 Review Now: ${process.env.CLIENT_SIDE_URL}/clientVisitLog/${
-        clientVisitLog._id
-      }
   `,
       process.env.TELEGRAM_CHAT_ID,
       process.env.TELEGRAM_TOPIC_CLIENT_VISIT_LOG_ID
