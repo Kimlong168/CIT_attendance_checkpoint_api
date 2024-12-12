@@ -109,7 +109,6 @@ const createClientVisitLog = async (req, res, next) => {
       req.body.expectedEndTime
     )}
     \n📝 Notes: ${req.body.notes ? req.body.notes : "No note"}
-      }
   `,
       process.env.TELEGRAM_CHAT_ID,
       process.env.TELEGRAM_TOPIC_CLIENT_VISIT_LOG_ID
