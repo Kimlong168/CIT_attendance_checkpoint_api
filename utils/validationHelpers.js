@@ -30,7 +30,17 @@ const validateUserBody = () => {
     //   .withMessage("Must be a valid email address."),
     // body("password").notEmpty().withMessage("Password is required."),
     body("role").notEmpty().withMessage("Role is required."),
-    body("chat_id").optional().isString(),
+    body("chat_id")
+      .optional()
+      .isString()
+      .withMessage("Chat ID must be a string."),
+    body("isAllowedRemoteCheckout")
+      .optional()
+      .toBoolean()
+      .isBoolean()
+      .withMessage(
+        "isAllowedRemoteCheckout must be a boolean (true or false)."
+      ),
   ];
 };
 

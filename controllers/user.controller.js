@@ -45,7 +45,10 @@ const updateUser = async (req, res, next) => {
 
     user.name = req.body.name;
     user.role = req.body.role;
+    user.isAllowedRemoteCheckout = req.body.isAllowedRemoteCheckout;
     user.chat_id = req.body.chat_id;
+
+    console.log(req.body);
 
     await user.save();
     successResponse(res, user, "User updated successfully");

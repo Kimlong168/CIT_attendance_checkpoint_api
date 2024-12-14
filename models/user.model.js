@@ -18,6 +18,12 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "manager", "user"],
     required: true,
   },
+
+  isAllowedRemoteCheckout: {
+    type: Boolean,
+    default: false,
+  },
+  
   profile_picture: {
     type: String,
   },

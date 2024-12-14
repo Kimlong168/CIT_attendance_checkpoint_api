@@ -37,6 +37,7 @@ const register = async (req, res, next) => {
       role: req.body.role,
       chat_id: req.body.chat_id,
       profile_picture: image.secure_url,
+      isAllowedRemoteCheckout: req.body.isAllowedRemoteCheckout,
       password: hashedPassword,
     };
 
@@ -52,6 +53,9 @@ const register = async (req, res, next) => {
       \n🆔 Name: ${req.body.name}
       \n📧 Email: ${req.body.email}
       \n👮 Role: ${req.body.role}
+      \n🌏 Remote Checkout: ${
+        req.body.isAllowedRemoteCheckout ? "true" : "false"
+      }
       \n💬 Chat ID: ${req.body.chat_id}`,
         process.env.TELEGRAM_CHAT_ID,
         process.env.TELEGRAM_TOPIC_SECURITY_ID
@@ -62,6 +66,9 @@ const register = async (req, res, next) => {
         \n🆔 Name: ${req.body.name}
         \n📧 Email: ${req.body.email}
         \n👮 Role: ${req.body.role}
+        \n🌏 Remote Checkout: ${
+          req.body.isAllowedRemoteCheckout ? "true" : "false"
+        }
         \n💬 Chat ID: ${req.body.chat_id}`,
         process.env.TELEGRAM_CHAT_ID,
         process.env.TELEGRAM_TOPIC_SECURITY_ID

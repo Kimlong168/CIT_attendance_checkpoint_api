@@ -186,28 +186,32 @@ const checkOutAttendance = async (req, res, next) => {
       );
     }
 
-    // Verify the QR code location matches
-    const qrCode = await QRCode.findById(qr_code);
-    if (!qrCode) {
-      return errorResponse(res, "QR Code not found", 404);
-    }
+    const employeeData = await User.findById(employee);
 
-    // Validate that the employee's wifi network is within a valid range of the QR code location
-    const userIp = req.ip;
-    const allowedNetworkRanges = qrCode.allowedNetworkRanges.map(
-      (range) => range.ip
-    );
+    // check if the employee is allowed to check out remotely
+    if (!employeeData.isAllowedRemoteCheckout) {
+      const qrCode = await QRCode.findById(qr_code);
+      if (!qrCode) {
+        return errorResponse(res, "QR Code not found", 404);
+      }
 
-    if (!ipRangeCheck(userIp, allowedNetworkRanges)) {
-      const wifiNames = qrCode.allowedNetworkRanges
-        .map((range) => range.wifiName)
-        .join(", ");
-
-      return errorResponse(
-        res,
-        `Access denied. You must be connected to the correct Wi-Fi network (${wifiNames})!`,
-        403
+      // Validate that the employee's wifi network is within a valid range of the QR code location
+      const userIp = req.ip;
+      const allowedNetworkRanges = qrCode.allowedNetworkRanges.map(
+        (range) => range.ip
       );
+
+      if (!ipRangeCheck(userIp, allowedNetworkRanges)) {
+        const wifiNames = qrCode.allowedNetworkRanges
+          .map((range) => range.wifiName)
+          .join(", ");
+
+        return errorResponse(
+          res,
+          `Access denied. You must be connected to the correct Wi-Fi network (${wifiNames})!`,
+          403
+        );
+      }
     }
 
     attendance.time_out = time_out ? new Date(time_out) : attendance.time_out;
@@ -219,8 +223,6 @@ const checkOutAttendance = async (req, res, next) => {
     }
 
     const result = await attendance.save();
-
-    const employeeData = await User.findById(employee);
 
     await sendTelegramMessage(
       `*Attendance Check Out* 🟥
