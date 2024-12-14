@@ -42,6 +42,10 @@ const attendanceSchema = new mongoose.Schema({
     type: String,
     default: "0",
   },
+  isRemoteCheckout: {
+    type: Boolean,
+    default: false,
+  },
   created_at: {
     type: Date,
     default: Date.now,

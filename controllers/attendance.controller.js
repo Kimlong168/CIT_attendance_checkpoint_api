@@ -188,20 +188,24 @@ const checkOutAttendance = async (req, res, next) => {
 
     const employeeData = await User.findById(employee);
 
-    // check if the employee is allowed to check out remotely
-    if (!employeeData.isAllowedRemoteCheckout) {
-      const qrCode = await QRCode.findById(qr_code);
-      if (!qrCode) {
-        return errorResponse(res, "QR Code not found", 404);
-      }
+    const isCheckoutremotely = false;
 
-      // Validate that the employee's wifi network is within a valid range of the QR code location
-      const userIp = req.ip;
-      const allowedNetworkRanges = qrCode.allowedNetworkRanges.map(
-        (range) => range.ip
-      );
+    const qrCode = await QRCode.findById(qr_code);
+    if (!qrCode) {
+      return errorResponse(res, "QR Code not found", 404);
+    }
 
-      if (!ipRangeCheck(userIp, allowedNetworkRanges)) {
+    // Validate that the employee's wifi network is within a valid range of the QR code location
+    const userIp = req.ip;
+    const allowedNetworkRanges = qrCode.allowedNetworkRanges.map(
+      (range) => range.ip
+    );
+
+    if (!ipRangeCheck(userIp, allowedNetworkRanges)) {
+      // check if the employee is allowed to check out remotely
+      if (employeeData.isAllowedRemoteCheckout) {
+        isCheckoutremotely = true;
+      } else {
         const wifiNames = qrCode.allowedNetworkRanges
           .map((range) => range.wifiName)
           .join(", ");
@@ -217,6 +221,7 @@ const checkOutAttendance = async (req, res, next) => {
     attendance.time_out = time_out ? new Date(time_out) : attendance.time_out;
     attendance.check_out_status =
       check_out_status || attendance.check_out_status;
+    attendance.isRemoteCheckout = isCheckoutremotely;
 
     if (check_out_status === "Early Check-out") {
       attendance.checkOutEarlyDuration = checkOutEarlyDuration;
@@ -225,7 +230,7 @@ const checkOutAttendance = async (req, res, next) => {
     const result = await attendance.save();
 
     await sendTelegramMessage(
-      `*Attendance Check Out* 🟥
+      `*Attendance Check Out ${isCheckoutremotely ? "(Remotely)" : ""}* 🟥
       \n🆔 ID: \`${result._id}\`
       \n👤 Employee: ${employeeData.name} (${employeeData.role})
       \n💰 Time Out: ${getFormattedTimeWithAMPM(time_out)}
