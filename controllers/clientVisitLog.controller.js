@@ -104,9 +104,10 @@ const createClientVisitLog = async (req, res, next) => {
     \n🏫Agent Name: ${req.body.agentName}
     \n📄 Purpose: ${req.body.purpose}
     \n🗓️ Date: ${getFormattedDate(req.body.date)}
-    \n🗓️ Start Time: ${getFormattedTimeWithAMPM(clientVisitLog.startTime)}
+    \n🗓️ Start Time: ${getFormattedTimeWithAMPM(clientVisitLog.startTime, true)}
     \n🗓️ Expected End Time: ${getFormattedTimeWithAMPM(
-      req.body.expectedEndTime
+      req.body.expectedEndTime,
+      true
     )}
     \n📝 Notes: ${req.body.notes ? req.body.notes : "No note"}
   `,
@@ -150,9 +151,10 @@ const updateClientVisitLog = async (req, res, next) => {
     \n🏫Agent Name: ${req.body.agentName}
     \n📄 Purpose: ${req.body.purpose}
     \n🗓️ Date: ${getFormattedDate(req.body.date)}
-    \n🗓️ Start Time: ${getFormattedTimeWithAMPM(clientVisitLog.startTime)}
+    \n🗓️ Start Time: ${getFormattedTimeWithAMPM(clientVisitLog.startTime, true)}
     \n🗓️ Expected End Time: ${getFormattedTimeWithAMPM(
-      req.body.expectedEndTime
+      req.body.expectedEndTime,
+      true
     )}
     \n📝 Notes: ${req.body.notes ? req.body.notes : "No note"}
   `,
