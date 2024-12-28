@@ -2,9 +2,9 @@ const Attendance = require("../models/attendance.model");
 const User = require("../models/user.model");
 const QRCode = require("../models/qrCode.model");
 const LeaveRequest = require("../models/leaveRequest.model");
+const axios = require("axios");
 const ipRangeCheck = require("ip-range-check");
 const { successResponse, errorResponse } = require("../utils/responseHelpers");
-const { calculateDistance } = require("../utils/calculateDistance");
 const { sendTelegramMessage } = require("../utils/sendTelegramMessage");
 const {
   getFormattedTimeWithAMPM,
@@ -108,7 +108,7 @@ const checkInAttendance = async (req, res, next) => {
       (range) => range.ip
     );
 
-    if (!ipRangeCheck(userIp, allowedNetworkRanges)) {
+    if (ipRangeCheck(userIp, allowedNetworkRanges)) {
       const wifiNames = qrCode.allowedNetworkRanges
         .map((range) => range.wifiName)
         .join(", ");
@@ -164,6 +164,8 @@ const checkOutAttendance = async (req, res, next) => {
     check_out_status,
     checkOutEarlyDuration,
     time_out,
+    lat,
+    lon,
   } = req.body;
   try {
     // const attendance = await Attendance.findById(req.params.id);
@@ -186,6 +188,8 @@ const checkOutAttendance = async (req, res, next) => {
       );
     }
 
+    console.log("location", lat, lon);
+
     const employeeData = await User.findById(employee);
 
     let isRemoteCheckout = false;
@@ -205,6 +209,20 @@ const checkOutAttendance = async (req, res, next) => {
       // check if the employee is allowed to check out remotely
       if (employeeData.isAllowedRemoteCheckout) {
         isRemoteCheckout = true;
+
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+        const response = await axios.get(url);
+
+        if (response.data.display_name) {
+          // Extract the display_name from the response
+          const displayName = response.data.display_name;
+
+          attendance.location = displayName;
+          console.log("displayName", displayName);
+        } else {
+          console.log("No results found for the location.");
+        }
       } else {
         const wifiNames = qrCode.allowedNetworkRanges
           .map((range) => range.wifiName)
@@ -230,7 +248,9 @@ const checkOutAttendance = async (req, res, next) => {
     const result = await attendance.save();
 
     await sendTelegramMessage(
-      `*Attendance Check Out ${isRemoteCheckout ? "(Remotely)" : ""}* 🟥
+      `*Attendance Check Out ${
+        isRemoteCheckout ? `(Remotely: ${result.location})` : ""
+      }* 🟥
       \n🆔 ID: \`${result._id}\`
       \n👤 Employee: ${employeeData.name} (${employeeData.role})
       \n💰 Time Out: ${getFormattedTimeWithAMPM(time_out)}
@@ -284,7 +304,6 @@ const recordAttendanceAbsentOrOnLeave = async () => {
           status: "Approved",
         });
 
-        console.log("test on leave", leaveRequest);
         // if on leave, then record attendance as "On Leave"
         if (leaveRequest) {
           const attendance = new Attendance({

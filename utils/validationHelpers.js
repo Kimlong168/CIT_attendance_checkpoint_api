@@ -120,6 +120,7 @@ const validateCheckOutAttendanceBody = () => {
       .optional()
       .isISO8601()
       .withMessage("Time Out must be a valid date."),
+      
   ];
 };
 

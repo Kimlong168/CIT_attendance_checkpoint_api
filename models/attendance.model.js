@@ -46,6 +46,10 @@ const attendanceSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  location: {
+    type: String,
+    default: "Office"
+  },
   created_at: {
     type: Date,
     default: Date.now,
