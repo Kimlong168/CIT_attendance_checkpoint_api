@@ -108,7 +108,7 @@ const checkInAttendance = async (req, res, next) => {
       (range) => range.ip
     );
 
-    if (ipRangeCheck(userIp, allowedNetworkRanges)) {
+    if (!ipRangeCheck(userIp, allowedNetworkRanges)) {
       const wifiNames = qrCode.allowedNetworkRanges
         .map((range) => range.wifiName)
         .join(", ");
